@@ -1,0 +1,30 @@
+---
+title: "Leo: Writings by Categories"
+image: "./images/totoro.jpg"
+desc: "Leo Qiao's writings by categories"
+---
+
+<h2>Categories</h2>
+<ul>
+  $for(allTags)$
+  <li>
+    <a href="#$title$">$title$</a>
+  </li>
+  $endfor$
+</ul>
+
+<hr>
+
+<h4>By categories</h4>
+<ul>
+  $for(allTags)$
+  <li id="$title$">
+    <a href="$url$">$title$</a>
+    <ul>
+      $for(posts)$
+      <li><a href="$url$">$title$</a></li>
+      $endfor$
+    </ul>
+  </li>
+  $endfor$
+</ul>

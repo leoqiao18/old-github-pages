@@ -15,10 +15,11 @@
   outputs = { flake-utils, nixpkgs, self }:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        config = {};
+        config = { };
         overlays = [ (import ./haskell-overlay.nix) ];
         pkgs = import nixpkgs { inherit config overlays system; };
-      in rec {
+      in
+      rec {
         defaultPackage = packages.website;
         defaultApp = apps.hakyll-site;
 
@@ -38,8 +39,9 @@
             # Helpful tools for `nix develop` shells
             #
             #ghcid                   # https://github.com/ndmitchell/ghcid
-            #haskell-language-server # https://github.com/haskell/haskell-language-server
-            #hlint                   # https://github.com/ndmitchell/hlint
+            haskell-language-server # https://github.com/haskell/haskell-language-server
+            hlint # https://github.com/ndmitchell/hlint
+            brittany
             #ormolu                  # https://github.com/tweag/ormolu
           ];
 

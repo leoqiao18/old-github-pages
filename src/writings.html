@@ -1,0 +1,20 @@
+---
+title: "Leo: Writings"
+image: "./images/totoro.jpg"
+desc: "Leo Qiao's writings"
+---
+
+<h3>Writings</h3>
+<div class="menu">
+  <a class="menu-item" href="/categories.html">Sorted by categories</a>
+  <a class="menu-item" href="/tags.html">Sorted by tags</a>
+</div>
+
+<div class="hspace"></div>
+
+<ul>
+  $for(posts)$
+  <li><a href="$url$">$title$</a><small> ($date$)</small></li>
+  $endfor$
+</ul>
+
