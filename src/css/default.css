@@ -14,7 +14,7 @@ footer {
 }
 
 .hspace {
-  margin-bottom: 2em;
+  min-height: 2em;
 }
 
 .menu { }

@@ -4,27 +4,21 @@ image: "./images/totoro.jpg"
 desc: "Leo Qiao's writings by categories"
 ---
 
-<h2>Categories</h2>
-<ul>
-  $for(allTags)$
-  <li>
-    <a href="#$title$">$title$</a>
-  </li>
-  $endfor$
-</ul>
+<h2>By categories</h2>
+
+$for(allTags)$
+<a href="#$title$">$title$</a>
+$sep$
+<span>, </span>
+$endfor$
 
 <hr>
 
-<h4>By categories</h4>
+$for(allTags)$
+<h4 id="$title$"># $title$</h4>
 <ul>
-  $for(allTags)$
-  <li id="$title$">
-    <a href="$url$">$title$</a>
-    <ul>
-      $for(posts)$
-      <li><a href="$url$">$title$</a></li>
-      $endfor$
-    </ul>
-  </li>
+  $for(posts)$
+  <li><a href="$url$">$title$</a></li>
   $endfor$
 </ul>
+$endfor$
