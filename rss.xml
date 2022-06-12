@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"
+    xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>Leo Qiao's Blog</title>
+        <link>https://leoqiao18.github.io</link>
+        <description><![CDATA[Leo Qiao's Blog]]></description>
+        <atom:link href="https://leoqiao18.github.io/rss.xml" rel="self"
+                   type="application/rss+xml" />
+        <lastBuildDate>Tue, 05 Apr 2022 00:00:00 UT</lastBuildDate>
+        <item>
+    <title>Abstract Syntax</title>
+    <link>https://leoqiao18.github.io/abstract-syntax.html</link>
+    <description><![CDATA[<h1>
+  <a href="./abstract-syntax.html">Abstract Syntax</a>
+</h1>
+<!-- <div> -->
+<!--   <small>2022-04-05</small> -->
+<!--    -->
+<!-- </div> -->
+
+<div class="hspace"></div>
+
+<h2 id="1-object-language-vs-metalanguage">1. Object Language vs. Metalanguage</h2>
+<p>A statement like “1 + 1 = 2 is true” seems intuitive enough that people can just nod in agreement and move on with their lives. But if you take a pause to think about what it actually means, you will most likely have a hard time explaining this intuition (assuming that you are not a logician or a PL theorist).</p>
+<p>If we stare at this statement for long enough, it seems to consist of two parts: <em>1 + 1 = 2</em> and <em>is true</em>. The first part describes some abstract thing/object denoted <em>1 + 1 = 2</em>, and the second part is some remark/property called <em>is true</em>. Putting them together, the phrase states that the object <em>1 + 1 = 2</em> has the <em>is true</em> property.</p>
+<p>To go one step deeper, we need to understand the <strong>languages</strong> being used to describe the object and the property (e.g. what are “1 + 1”, “=” and “is true”). By convention, the language for describing the object is aptly named the <strong>object language</strong>; as for the language of the property, since it is specifying properties about the object language, logicians call it the <strong>metalanguage</strong> (nothing to do with the metaverse). It turns out that the duo of object language and metalanguage is quite universal and powerful, and can be used to describe a ton of things.</p>
+<p>This post will focus on using <strong>abstract syntax</strong> to represent the object language, and the next one will discuss <strong>judgements</strong> as the metalanguage.</p>
+<h2 id="2-syntax">2. Syntax</h2>
+<p>The general concept of syntax involves several distinct concepts.</p>
+<p>The <strong>surface/concrete syntax</strong> is concerned with how phrases are displayed and usually represented by strings of characters from some alphabet. For example, in the concrete syntax of the C programming language, <code>++i</code>, <code>i=i+1</code> are syntactically valid expressions, but <code>i=i+</code> is not.</p>
+<p>The <strong>structural/abstract syntax</strong> is concerned with the structure of the phrases and, in particular, how they are composed from other phrases. Since phrases are composed from other phrases, a phrase can be represented as a <em>tree</em>; therefore, at the abstract syntax level, a phrase is represented as an <strong>abstract syntax tree</strong>.</p>
+<p>An extension that could be added to the abstract syntax tree is the <em>binding</em> structure of syntax. This is concerned with the introduction and use of identifiers: how they are declared, and how declared identifiers can be used. At this level, a phrase is represented as an <strong>abstract binding tree</strong>, which enrich abstract syntax trees with the concept of binding and scope.</p>
+<p>The study of concrete syntax is not discussed here. This post will focus on the formalization of abstract syntax tree and abstract binding tree.</p>
+<h2 id="3-abstract-syntax-tree">3. Abstract Syntax Tree</h2>
+<h3 id="31-informal-definitions">3.1 Informal Definitions</h3>
+<p>An <strong>abstract syntax tree</strong> (or <strong>ast</strong> for short) is an ordered tree whose leaves are <strong>variables</strong>, and whose interior nodes are <strong>operators</strong> whose <strong>arguments</strong> are its children. Ast’s are calssified into a variety of <strong>sorts</strong> corresponding to different forms of syntax. A <strong>variable</strong> stands for an unspecified, or generic, piece of syntax of a specified sort. Ast’s can be combined by an <strong>operator</strong>, which has an <strong>arity</strong> specifying the sort of the operator and the number and sorts of its arguments. An operator of sort <span class="math inline">\(s\)</span> and arity <span class="math inline">\(s_1, ..., s_n\)</span> combines <span class="math inline">\(n \geq 0\)</span> ast’s of sort <span class="math inline">\(s_1, ..., s_n\)</span>, respectively, into a compound ast of sort <span class="math inline">\(s\)</span>.</p>
+<p><em>Note:</em> In the first sentence of the definitions, saying “leaves are variables” is a little misleading. Perhaps a more accurate one would be: “An ast is an ordered tree whose leaves are variables or operators of arity 0”.</p>
+<h3 id="32-examples">3.2 Examples</h3>
+<p>Let’s have some examples. Consider a language of arithmetic expressions built from numbers, addition, and multiplication. The abstract syntax of such a language consists of a single sort <span class="math inline">\(Exp\)</span> generated by these operators:</p>
+<ol>
+<li>For each <span class="math inline">\(n \in \mathbb{N}\)</span>, an operator <code>num[n]</code>, of sort <span class="math inline">\(Exp\)</span>, with no arguments.</li>
+<li>Two operators, <code>plus</code> and <code>times</code>, of sort <span class="math inline">\(Exp\)</span>, each with two arguments of sort <span class="math inline">\(Exp\)</span>.</li>
+</ol>
+<p>The expression <span class="math inline">\(2+(3 \times x)\)</span>, which involves a variable <span class="math inline">\(x\)</span>, would be represented by the ast <code>plus(num[2];times(num[3];x))</code> of sort <span class="math inline">\(Exp\)</span>, under the assumption that <span class="math inline">\(x\)</span> is also of sort <span class="math inline">\(Exp\)</span>.</p>
+<p>Since <code>num[4]</code> is an ast of sort <span class="math inline">\(Exp\)</span>, we may plug it in for <span class="math inline">\(x\)</span> in the above ast to obtain the new ast <code>plus(num[2];times(num[3];num[4]))</code>, which we usually write in a concrete syntax of <span class="math inline">\(2+(3 \times 4)\)</span>.</p>
+<h3 id="33-structural-induction">3.3 Structural Induction</h3>
+<p>The tree structure of ast’s provides a useful principle of reasoning, called <strong>structural induction</strong>. Suppose that we wish to prove that some property <span class="math inline">\(P(a)\)</span> holds for all ast’s <span class="math inline">\(a\)</span> of a given sort. To show this, it is enough to consider all the ways in which <span class="math inline">\(a\)</span> can be generated and show that the property holds in each case under the assumption that it holds for its constituent ast’s (if any).</p>
+<p>In the case of the sort <span class="math inline">\(Exp\)</span> above, it means that it suffices to show:</p>
+<ol>
+<li>The property holds for any variable <span class="math inline">\(x\)</span> of sort <span class="math inline">\(Exp\)</span>: prove that <span class="math inline">\(P(x)\)</span>.</li>
+<li>The property holds for any number, <code>num[n]</code>: for every <span class="math inline">\(n \in \mathbb{N}\)</span>, prove that <span class="math inline">\(P(\)</span><code>num[n]</code><span class="math inline">\()\)</span>.</li>
+<li>Assuming that the property holds for <code>a1</code> and <code>a2</code>, prove that it holds for <code>plus(a1;a2)</code> and <code>times(a1;a2)</code>.</li>
+</ol>
+<p>Because these cases exhaust all possibilities for the formation of <span class="math inline">\(a\)</span>, we are assured that <span class="math inline">\(P(a)\)</span> holds for any ast <span class="math inline">\(a\)</span> of sort <span class="math inline">\(Exp\)</span>.</p>
+<h3 id="34-formal-definitions">3.4 Formal Definitions</h3>
+<p>(Taken from Chapter 1 of PFPL.)</p>
+<p>Let <span class="math inline">\(S\)</span> be a finite set of <strong>sorts</strong>. For a given set <span class="math inline">\(S\)</span> of sorts, an <strong>arity</strong> has the form <span class="math inline">\((s_1, ..., s_n)s\)</span>, which specifies the sort <span class="math inline">\(s \in S\)</span> of an operator taking <span class="math inline">\(n \geq 0\)</span> arguments, each of sort <span class="math inline">\(s_i \in S\)</span>. Let <span class="math inline">\(O = \{ O_{\alpha} \}\)</span> be an arity-indexed family of disjoint sets of <strong>operators</strong> <span class="math inline">\(O_{\alpha}\)</span> of arity <span class="math inline">\(\alpha\)</span>. If <span class="math inline">\(o\)</span> is an operator of arity <span class="math inline">\((s_1, ..., s_n)s\)</span>, we say that <span class="math inline">\(o\)</span> has sort <span class="math inline">\(s\)</span> and has <span class="math inline">\(n\)</span> arguments of sorts <span class="math inline">\(s_1, ..., s_n\)</span>.</p>
+<p>Fix a set <span class="math inline">\(S\)</span> of sorts and an arity-indexed family <span class="math inline">\(O\)</span> of sets of operators of each arity. Let <span class="math inline">\(X = \{X_s\}_{s \in S}\)</span> be a sort-indexed family of disjoint finite sets <span class="math inline">\(X_s\)</span> of <strong>variables</strong> <span class="math inline">\(x\)</span> of sort <span class="math inline">\(s\)</span>. When <span class="math inline">\(X\)</span> is clear from context, we say that a variable <span class="math inline">\(x\)</span> is of sort <span class="math inline">\(s\)</span> if <span class="math inline">\(x \in X_s\)</span>, and we say that <span class="math inline">\(x\)</span> is <strong>fresh for</strong> <span class="math inline">\(X\)</span>, or just <span class="math inline">\(fresh\)</span> when <span class="math inline">\(X\)</span> is understood, if <span class="math inline">\(x \not \in X_s\)</span> for any sort <span class="math inline">\(s\)</span>. If <span class="math inline">\(x\)</span> is fresh for <span class="math inline">\(X\)</span> and <span class="math inline">\(s\)</span> is a sort, then <span class="math inline">\(X, x\)</span> is the family of sets of variables obtained by adding <span class="math inline">\(x\)</span> to <span class="math inline">\(X_s\)</span>. The notation is ambiguous in that the sort <span class="math inline">\(s\)</span> is not explicitly stated by determined from context.</p>
+<p>The family <span class="math inline">\(A[X]= \{ A[X]_s \}_{s \in S}\)</span> of <strong>abstract syntax trees$, or </strong>ast’s**, of sort <span class="math inline">\(s\)</span> is the smallest family satisfying the following conditions:</p>
+<ol>
+<li>A variable of sort <span class="math inline">\(s\)</span> is an ast of sort <span class="math inline">\(s\)</span>: if <span class="math inline">\(x \in X_s\)</span>, then <span class="math inline">\(x \in A[X]_s\)</span>.</li>
+<li>Operators combine ast’s: if <span class="math inline">\(o\)</span> is an operator of arity <span class="math inline">\((s_1, ..., s_n)s\)</span>, and if <span class="math inline">\(a_1 \in A[X]_{s_1}, ..., a_n \in A[X]_{s_n}\)</span>, then <span class="math inline">\(o(a_1;...;a_n) \in A[X]_s\)</span>.</li>
+</ol>
+<p>It follows from this definition that the principle of <strong>structural induction</strong> can be used to prove that some property <span class="math inline">\(P\)</span> holds of every ast. To show <span class="math inline">\(P(a)\)</span> holds for every <span class="math inline">\(a \in A[X]\)</span>, it is enough to show:</p>
+<ol>
+<li>If <span class="math inline">\(x \in X_s\)</span>, then <span class="math inline">\(P_s(x)\)</span>.</li>
+<li>If <span class="math inline">\(o\)</span> has arity <span class="math inline">\((s_1, ..., s_n)s\)</span> and <span class="math inline">\(P_{s_1}(a_1)\)</span> and <span class="math inline">\(...\)</span> and <span class="math inline">\(P_{s_n}(a_n)\)</span>, then <span class="math inline">\(P_s(o(a_1;...;a_n))\)</span>.</li>
+</ol>
+<p>Variables are given meaning by <strong>substitution</strong>. If <span class="math inline">\(a \in A[X,x]_{s&#39;}\)</span>, and <span class="math inline">\(b \in A[X]_s\)</span>, then <span class="math inline">\([b/x]a \in A[X]_{s&#39;}\)</span> is the result of substituting <span class="math inline">\(b\)</span> for every occurrence of <span class="math inline">\(x\)</span> in <span class="math inline">\(a\)</span>. The ast <span class="math inline">\(a\)</span> is called the <strong>target</strong>, and <span class="math inline">\(x\)</span> is called the <strong>subject</strong>, of the substitution. Substitution is defined by the following equations:</p>
+<ol>
+<li><span class="math inline">\([b/x]x = b\)</span> and <span class="math inline">\([b/x]y = y\)</span> if <span class="math inline">\(x \neq y\)</span>.</li>
+<li><span class="math inline">\([b/x]o(a_1;...;a_n) = o([b/x]a_1;...;[b/x]a_n)\)</span>.</li>
+</ol>
+<h2 id="4-abstract-binding-tree">4. Abstract Binding Tree</h2>
+<h3 id="41-definition">4.1 Definition</h3>
+<h2 id="references">References</h2>
+<ul>
+<li>Harper. (2016). Practical Foundations for Programming Languages (2nd ed.). Cambridge University Press.</li>
+</ul>
+]]></description>
+    <pubDate>Tue, 05 Apr 2022 00:00:00 UT</pubDate>
+    <guid>https://leoqiao18.github.io/abstract-syntax.html</guid>
+    <dc:creator>Leo Qiao</dc:creator>
+</item>
+
+    </channel>
+</rss>
